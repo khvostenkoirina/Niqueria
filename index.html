@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niqueria - Официальный Портал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #2c3e50;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        #loginPage {
+            background: white;
+            max-width: 450px;
+            margin: 15vh auto;
+            border: 5px solid #2c3e50;
+            border-radius: 25px;
+            box-shadow: 0 12px 0 #2c3e50;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 3px solid #2c3e50;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        #mainSiteContent {
+            display: none;
+        }
+
+        .site-header {
+            background-color: #2c3e50;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 5px solid #ffd700;
+            margin-bottom: 30px;
+        }
+
+        .site-logo {
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-tab {
+            background-color: white;
+            border: 2px solid #2c3e50;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .nav-tab.active {
+            background-color: #ffd700;
+        }
+
+        .main-card {
+            background: white;
+            max-width: 700px;
+            margin: 0 auto;
+            border: 5px solid #2c3e50;
+            border-radius: 25px;
+            box-shadow: 0 12px 0 #2c3e50;
+            padding: 25px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .godni-bank {
+            background-color: #e3f2fd;
+            border: 3px solid #1e88e5;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .godni-title {
+            font-size: 22px;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        .savings-counter {
+            background-color: #0d47a1;
+            color: #fff;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .members-section {
+            background-color: #e8f5e9;
+            border: 3px solid #2e7d32;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .members-title {
+            font-size: 18px;
+            color: #1b5e20;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .members-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .member-chip {
+            background-color: white;
+            border: 2px solid #2e7d32;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .lottery-section {
+            background-color: #f3e5f5;
+            border: 3px solid #8e24aa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .lottery-machine {
+            background-color: #2c3e50;
+            color: #ffd700;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px auto;
+            border: 4px solid #8e24aa;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-box {
+            background-color: #ffebee;
+            border: 3px solid #ef5350;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-box h3 {
+            color: #c62828;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .admin-control {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .admin-input,
+        .admin-select {
+            padding: 8px;
+            font-size: 15px;
+            border: 2px solid #ef5350;
+            border-radius: 10px;
+            width: 100%;
+            outline: none;
+        }
+
+        .admin-btn {
+            background-color: #ef5350;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 0 #b71c1c;
+        }
+
+        .admin-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .admin-btn.gold {
+            background-color: #9c27b0;
+            box-shadow: 0 4px 0 #4a148c;
+        }
+
+        .timers-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .timer-box {
+            background-color: #fff5f5;
+            border: 3px solid #e53935;
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .countdown {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        .funny-fact {
+            background-color: #e8f5e9;
+            border-left: 6px solid #38ef7d;
+            padding: 12px;
+            border-radius: 0 15px 15px 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #c0392b;
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            font-size: 14px;
+            color: #7f8c8d;
+            border-top: 2px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ОКНО ВХОДА -->
+    <div id="loginPage">
+        <h2 id="loginTitle">Вход на сайт Niqueria</h2>
+        <p id="loginSub" style="font-size: 14px; color: #7f8c8d; margin-bottom: 20px;">Введите своё имя для регистрации
+            в списке группы.</p>
+        <input type="text" id="userNameInput" class="login-input" placeholder="Ваше имя...">
+        <button class="btn" id="loginBtn" onclick="loginToSite()">Войти на портал</button>
+    </div>
+
+    <!-- ОСНОВНОЙ ПОРТАЛ -->
+    <div id="mainSiteContent">
+        <header class="site-header">
+            <div class="site-logo">[ N̶ ] NIQUERIA</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <select id="langSelect" onchange="changeSiteLanguage(this.value)"
+                    style="padding: 5px; font-size: 14px; border-radius: 8px;">
+                    <option value="ru">🇷🇺 RU</option>
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="es">🇪🇸 ES</option>
+                </select>
+                <div class="nav-buttons">
+                    <button class="nav-tab active" id="tabMain" onclick="switchPage('main')">📱 Главная</button>
+                    <button class="nav-tab" id="tabAdmin" onclick="switchPage('admin')">🔑 Админка</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-card">
+            <div id="pageMain" class="page active">
+                <div class="godni-bank">
+                    <div class="godni-title" id="bankTitle">🏦 Центральный Банк: GODNI</div>
+                    <div class="savings-counter" id="dailyIncomeDisplay">Твой баланс: 0 N̶</div>
+                </div>
+                <div class="members-section">
+                    <div class="members-title" id="membersTitle">👥 Список участников группы Niqueria:</div>
+                    <div class="members-list" id="membersListContainer"></div>
+                </div>
+
+                <!-- Полноценный отдельный блок: Мероприятие Месяца -->
+                <div
+                    style="background: white; border: 5px solid #2c3e50; border-radius: 25px; box-shadow: 0 12px 0 #2c3e50; padding: 20px; margin: 25px 0; text-align: center; background-color: #fce4ec; border-color: #e91e63; box-shadow: 0 12px 0 #e91e63;">
+                    <div class="schedule-title" id="monthEventTitle"
+                        style="color: #e91e63; font-size: 20px; font-weight: bold; margin-bottom: 10px;">📅 Мероприятие
+                        Месяца</div>
+                    <div class="schedule-text" id="monthEventBillboard"
+                        style="background: white; padding: 12px; border-radius: 12px; border: 2px solid #f8bbd0; font-size: 16px; font-weight: bold; color: #880e4f; line-height: 1.5;">
+                        Ожидайте грандиозный запуск портала 8 сентября! 
+                    </div>
+                </div>
+
+
+                <div class="lottery-section">
+                    <div class="lottery-title" id="lotteryTitle">🎰 Ежедневная Супер-Лотерея</div>
+                    <div class="lottery-machine" id="lotteryScreen">Ожидание запуска лотереи Администратором...</div>
+                </div>
+                <div class="timers-container">
+                    <div class="timer-box">
+                        <div class="timer-title" id="tBdayTitle">🎂 До 9-летия создателя:</div>
+                        <div class="countdown" id="birthday-timer">Загрузка...</div>
+                    </div>
+                    <div class="timer-box">
+                        <div class="timer-title" id="tSchoolTitle">🎒 До весёлых событий (8 сентября):</div>
+                        <div class="countdown" id="school-timer">Загрузка...</div>
+                    </div>
+                </div>
+                <div class="funny-fact" id="funnyFact">📌 <strong>Справка для дяди Влада:</strong> <br>Мы НЕ Нигерия и
+                    не Никарагуа! Наша валюта от банка <b>GODNI</b> пишется как <b>N̶</b>. У нас 10 активных участников!
+                    😎</div>
+            </div>
+
+            <div id="pageAdmin" class="page">
+                <div id="adminAuthBlock" style="text-align: center; padding: 10px 0;">
+                    <h3 id="admAuthTitle">Введите секретный код Администратора:</h3>
+                    <input type="password" id="adminPasswordInput" class="admin-input" placeholder="Пароль..."
+                        style="max-width: 300px; margin: 15px auto; display: block;">
+                    <button class="admin-btn" id="admAuthBtn" onclick="checkAdminPassword()">Войти в систему</button>
+                </div>
+                <div id="adminControlsBlock" style="display: none;">
+                    <div class="admin-box">
+                        <h3 id="admMoneyTitle">💰 Управление деньгами GODNI</h3>
+                        <div class="admin-control">
+                            <label id="admLblTarget">Выберите получателя:</label>
+                            <select id="moneyTargetSelect" class="admin-select">
+                                <option value="player">Ты (Создатель)</option>
+                                <option value="nicolas">Nicolás 👑</option>
+                            </select>
+                        </div>
+                        <div class="admin-control">
+                            <label id="admLblAmount">Сумма перевода (в N̶):</label>
+                            <input type="number" id="moneyAmountInput" class="admin-input" value="50">
+                        </div>
+                        <button class="admin-btn" id="admGrantBtn" onclick="adminGrantMoney()">Начислить валюту
+                            N̶</button>
+                    </div>
+                    <div class="admin-box">
+                        <h3 id="admRemoveTitle">❌ Исключение из группы Niqueria</h3>
+                        <div class="admin-control"><select id="removeMemberSelect" class="admin-select"></select></div>
+                        <button class="admin-btn" id="admRemoveBtn" style="background-color: #d32f2f;"
+                            onclick="adminRemoveMember()">❌ Удалить участника</button>
+                    </div>
+                    <!-- Блок запуска розыгрыша лотереи -->
+                    <div class="admin-box" style="border-color: #9c27b0; background-color: #f3e5f5;">
+                        <h3 id="admLotTitle">🎰 Панель запуска розыгрыша</h3>
+                        <button class="admin-btn gold" id="admStartLotBtn" onclick="adminStartLottery()">ЗАПУСТИТЬ
+                            ЛОТЕРЕЮ НА САЙТЕ</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer" id="footerText">Niqueria © 2026 • Участников: 10</div>
+        </div>
+    </div>
+
+    <!-- ================= ПОЛНЫЙ СКРИПТ АВТОМАТИЗАЦИИ ================= -->
+    <script>
+        const SECRET_ADMIN_PASSWORD = "AdminPremiumNiqueria™";
+        let totalIncome = 0, currentLotteryPrize = 100, isSpinning = false, currentLoggedInUser = "";
+
+        // Твой официальный список 10 участников из блокнота
+        const defaultParticipants = ["Nicolás 👑", "Eric Marin", "Pedro", "Thiago ⚡", "Ismael", "Agam 💎", "Haroun", "Abigail ✨", "Aarón", "Gerard"];
+        let participants = [];
+
+        // Словарь для перевода страниц
+        const translations = {
+            ru: { loginTitle: "Вход на сайт Niqueria", loginSub: "Введите своё имя для регистрации в списке группы.", loginBtn: "Войти на портал", bankTitle: "🏦 Центральный Банк: GODNI", balanceText: "Твой баланс: ", membersTitle: "👥 Список участников группы Niqueria:", lotteryTitle: "🎰 Ежедневная Супер-Лотерея", lotteryMachine: "Ожидание запуска лотереи Администратором...", funnyFact: "📌 <strong>Справка для дяди Влада:</strong> <br>Мы НЕ Нигерия и не Никарагуа! Наша валюта от банка <b>GODNI</b> пишется как <b>N̶</b>. У нас 10 активных участников! 😎", footerText: "Niqueria © 2026 • Участников: 10" },
+            en: { loginTitle: "Login to Niqueria", loginSub: "Enter your name to register in the group list.", loginBtn: "Enter Portal", bankTitle: "🏦 Central Bank: GODNI", balanceText: "Your balance: ", membersTitle: "👥 Niqueria Group Members List:", lotteryTitle: "🎰 Daily Super-Lottery", lotteryMachine: "Waiting for the Administrator...", funnyFact: "📌 <strong>Note for Uncle Vlad:</strong> <br>We are NOT Nigeria! Our currency from <b>GODNI</b> bank is written as <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Members: 10" },
+            es: { loginTitle: "Iniciar sesión en Niqueria", loginSub: "Introduce tu nombre para registrarte.", loginBtn: "Entrar al Portal", bankTitle: "🏦 Banco Central: GODNI", balanceText: "Tu saldo: ", membersTitle: "👥 Lista de Miembros del Grupo Niqueria:", lotteryTitle: "🎰 Súper Lotería Diaria", lotteryMachine: "Esperando al Administrador...", funnyFact: "📌 <strong>Nota para el tío Vlad:</strong> <br>¡NO somos Nigeria! Nuestra moneda de <b>GODNI</b> se escribe <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Miembros: 10" }
+        };
+
+        function changeSiteLanguage(lang) {
+            localStorage.setItem('niqueria_lang', lang);
+            const t = translations[lang]; if (!t) return;
+            document.getElementById('loginTitle').innerText = t.loginTitle;
+            document.getElementById('loginSub').innerText = t.loginSub;
+            document.getElementById('loginBtn').innerText = t.loginBtn;
+            if (document.getElementById('mainSiteContent').style.display !== 'block') return;
+            document.getElementById('bankTitle').innerText = t.bankTitle;
+            document.getElementById('dailyIncomeDisplay').innerText = `${t.balanceText}${totalIncome} N̶`;
+            document.getElementById('membersTitle').innerText = t.membersTitle;
+            document.getElementById('lotteryTitle').innerText = t.lotteryTitle;
+            if (!isSpinning) document.getElementById('lotteryScreen').innerText = t.lotteryMachine;
+            document.getElementById('funnyFact').innerHTML = t.funnyFact;
+            document.getElementById('footerText').innerText = t.footerText;
+        }
+
+        // Обновляем базу данных под версию из блокнота
+        if (localStorage.getItem('niqueria_version') !== 'v10') {
+            localStorage.setItem('niqueria_members', JSON.stringify(defaultParticipants));
+            localStorage.setItem('niqueria_version', 'v10');
+        }
+
+        function loadSavedData() {
+            participants = JSON.parse(localStorage.getItem('niqueria_members')) || [...defaultParticipants];
+            const savedBalance = localStorage.getItem('niqueria_balance');
+            if (savedBalance !== null) { totalIncome = parseInt(savedBalance); }
+            else {
+                const diff = Math.abs(new Date() - new Date('July 1, 2026 00:00:00'));
+                totalIncome = (Math.floor(diff / (1000 * 60 * 60 * 24)) + 1) * 10;
+            }
+            document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`;
+        }
+
+        function loginToSite() {
+            const nameInput = document.getElementById('userNameInput').value.trim();
+            if (nameInput === "") { alert("Введите имя!"); return; }
+            currentLoggedInUser = nameInput;
+            if (!participants.includes(currentLoggedInUser)) { participants.push(currentLoggedInUser); }
+            localStorage.setItem('niqueria_members', JSON.stringify(participants));
+            localStorage.setItem('niqueria_balance', totalIncome);
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainSiteContent').style.display = 'block';
+            renderMembersList(); updateAdminDropdowns();
+            changeSiteLanguage(localStorage.getItem('niqueria_lang') || 'ru');
+        }
+
+        function renderMembersList() {
+            const container = document.getElementById('membersListContainer'); container.innerHTML = "";
+            participants.forEach(m => { container.innerHTML += `<div class="member-chip">${m}</div>`; });
+        }
+
+        function checkBalance() { alert('Баланс GODNI стабилен. Касса N̶ защищена силами всех участников! 💰'); }
+
+        function switchPage(p) {
+            document.getElementById('pageMain').classList.toggle('active', p === 'main');
+            document.getElementById('pageAdmin').classList.toggle('active', p === 'admin');
+            document.getElementById('tabMain').classList.toggle('active', p === 'main');
+            document.getElementById('tabAdmin').classList.toggle('active', p === 'admin');
+        }
+
+        function checkAdminPassword() {
+            if (document.getElementById('adminPasswordInput').value === SECRET_ADMIN_PASSWORD) {
+                document.getElementById('adminAuthBlock').style.display = 'none';
+                document.getElementById('adminControlsBlock').style.display = 'block';
+                updateAdminDropdowns();
+            } else { alert("Неверный код!"); }
+        }
+
+        function adminGrantMoney() {
+            const amt = parseInt(document.getElementById('moneyAmountInput').value) || 0;
+            if (document.getElementById('moneyTargetSelect').value === 'player') { totalIncome += amt; }
+            localStorage.setItem('niqueria_balance', totalIncome);
+            document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`;
+            alert(`Начислено ${amt} N̶!`);
+        }
+
+        function adminRemoveMember() {
+            const val = document.getElementById('removeMemberSelect').value;
+            if (val === "Nicolás 👑" || val === currentLoggedInUser) { alert("Нельзя удалить!"); return; }
+            participants = participants.filter(m => m !== val);
+            localStorage.setItem('niqueria_members', JSON.stringify(participants));
+            renderMembersList(); updateAdminDropdowns();
+            alert("Удалено!");
+        }
+
+        function updateAdminDropdowns() {
+            const sel = document.getElementById('removeMemberSelect'); if (!sel) return;
+            sel.innerHTML = ""; participants.forEach(m => { sel.innerHTML += `<option value="${m}">${m}</option>`; });
+        }
+
+        function adminStartLottery() {
+            if (isSpinning) return;
+            if (confirm("Запустить лотерею?")) { switchPage('main'); runLotteryLogic(); }
+        }
+
+        function runLotteryLogic() {
+            isSpinning = true; const scr = document.getElementById('lotteryScreen'); let counter = 0;
+            const interval = setInterval(() => {
+                scr.innerText = `🎰 Выбор: ${participants[Math.floor(Math.random() * participants.length)]}`;
+                if (++counter > 15) {
+                    clearInterval(interval);
+                    const winner = participants[Math.floor(Math.random() * participants.length)];
+                    if (winner === currentLoggedInUser) { totalIncome += 100; localStorage.setItem('niqueria_balance', totalIncome); document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`; scr.innerHTML = `🎉 ВЫИГРАЛ ТЫ! +100 N̶!`; }
+                    else { scr.innerHTML = `🎉 Выиграл: ${winner} (100 N̶)`; }
+                    isSpinning = false;
+                }
+            }, 100);
+        }
+
+        function updateTimers() {
+            const now = new Date().getTime();
+            const diffBirth = new Date('July 12, 2026 00:00:00').getTime() - now;
+            if (diffBirth > 0) {
+                const d = Math.floor(diffBirth / (1000 * 60 * 60 * 24)), h = Math.floor((diffBirth % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById('birthday-timer').innerHTML = `${d}д ${h}ч`;
+            } else { document.getElementById('birthday-timer').innerHTML = "🎉 С ДНЁМ РОЖДЕНИЯ! 🎁"; }
+            const diffSch = new Date('September 8, 2026 00:00:00').getTime() - now;
+            if (diffSch > 0) { document.getElementById('school-timer').innerHTML = `${Math.floor(diffSch / (1000 * 60 * 60 * 24))}д`; }
+            else { document.getElementById('school-timer').innerHTML = "Началось!"; }
+        }
+
+        // --- ЗАПУСК БАЗОВЫХ СИСТЕМ И ПРОВЕРКА ПАМЯТИ БРАУЗЕРА ---
+        loadSavedData();
+        setInterval(updateTimers, 1000);
+        updateTimers();
+
+        // Проверяем сохраненный язык и выставляем его в меню выбора
+        const savedLang = localStorage.getItem('niqueria_lang') || 'ru';
+        document.getElementById('langSelect').value = savedLang;
+        changeSiteLanguage(savedLang);
+    </script>
+</body>
+
+</html>
