@@ -345,7 +345,7 @@
                         Месяца</div>
                     <div class="schedule-text" id="monthEventBillboard"
                         style="background: white; padding: 12px; border-radius: 12px; border: 2px solid #f8bbd0; font-size: 16px; font-weight: bold; color: #880e4f; line-height: 1.5;">
-                        Ожидайте грандиозный запуск портала 8 сентября! 
+                        Ожидайте грандиозный запуск портала 8 сентября!
                     </div>
                 </div>
 
@@ -382,7 +382,6 @@
                         <div class="admin-control">
                             <label id="admLblTarget">Выберите получателя:</label>
                             <select id="moneyTargetSelect" class="admin-select">
-                                <option value="player">Ты (Создатель)</option>
                                 <option value="nicolas">Nicolás 👑</option>
                             </select>
                         </div>
@@ -415,34 +414,96 @@
     <!-- ================= ПОЛНЫЙ СКРИПТ АВТОМАТИЗАЦИИ ================= -->
     <script>
         const SECRET_ADMIN_PASSWORD = "AdminPremiumNiqueria™";
-        let totalIncome = 0, currentLotteryPrize = 100, isSpinning = false, currentLoggedInUser = "";
+        let balance = 100, inventory = [], customBoxes = [];
 
-        // Твой официальный список 10 участников из блокнота
-        const defaultParticipants = ["Nicolás 👑", "Eric Marin", "Pedro", "Thiago ⚡", "Ismael", "Agam 💎", "Haroun", "Abigail ✨", "Aarón", "Gerard"];
-        let participants = [];
+        // РЕАЛЬНАЯ БАЗА ДАННЫХ КОШЕЛЬКОВ ТВОИХ ДРУЗЕЙ
+        let groupWallets = {
+            Me: 100, Nicolas: 100, Eric: 100, Pedro: 100, Thiago: 100,
+            Ismael: 100, Agam: 100, Haroun: 100, Abigail: 100, Aaron: 100, Gerard: 100
+        };
 
-        // Словарь для перевода страниц
         const translations = {
-            ru: { loginTitle: "Вход на сайт Niqueria", loginSub: "Введите своё имя для регистрации в списке группы.", loginBtn: "Войти на портал", bankTitle: "🏦 Центральный Банк: GODNI", balanceText: "Твой баланс: ", membersTitle: "👥 Список участников группы Niqueria:", lotteryTitle: "🎰 Ежедневная Супер-Лотерея", lotteryMachine: "Ожидание запуска лотереи Администратором...", funnyFact: "📌 <strong>Справка для дяди Влада:</strong> <br>Мы НЕ Нигерия и не Никарагуа! Наша валюта от банка <b>GODNI</b> пишется как <b>N̶</b>. У нас 10 активных участников! 😎", footerText: "Niqueria © 2026 • Участников: 10" },
-            en: { loginTitle: "Login to Niqueria", loginSub: "Enter your name to register in the group list.", loginBtn: "Enter Portal", bankTitle: "🏦 Central Bank: GODNI", balanceText: "Your balance: ", membersTitle: "👥 Niqueria Group Members List:", lotteryTitle: "🎰 Daily Super-Lottery", lotteryMachine: "Waiting for the Administrator...", funnyFact: "📌 <strong>Note for Uncle Vlad:</strong> <br>We are NOT Nigeria! Our currency from <b>GODNI</b> bank is written as <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Members: 10" },
-            es: { loginTitle: "Iniciar sesión en Niqueria", loginSub: "Introduce tu nombre para registrarte.", loginBtn: "Entrar al Portal", bankTitle: "🏦 Banco Central: GODNI", balanceText: "Tu saldo: ", membersTitle: "👥 Lista de Miembros del Grupo Niqueria:", lotteryTitle: "🎰 Súper Lotería Diaria", lotteryMachine: "Esperando al Administrador...", funnyFact: "📌 <strong>Nota para el tío Vlad:</strong> <br>¡NO somos Nigeria! Nuestra moneda de <b>GODNI</b> se escribe <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Miembros: 10" }
+            ru: {
+                loginTitle: "Вход на сайт Niqueria", loginSub: "Введите своё имя для регистрации в списке группы.", loginBtn: "Войти на портал", bankTitle: "🏦 Центральный Банк: GODNI", balanceText: "Твой баланс: ", membersTitle: "👥 Список участников группы Niqueria:", lotteryTitle: "🎰 Ежедневная Супер-Лотерея", lotteryMachine: "Ожидание запуска лотереи Администратором...", funnyFact: "📌 <strong>Справка для дяди Влада:</strong> <br>Мы НЕ Нигерия и не Никарагуа! Наша валюта от банка <b>GODNI</b> пишется как <b>N̶</b>. У нас 10 активных участников! 😎", footerText: "Niqueria © 2026 • Участников: 10",
+                monthTitle: "📅 Мероприятие Месяца", monthText: "Ожидайте грандиозный запуск портала 8 сентября!",
+                // Новые переводы для вкладок и админки (RU)
+                tabMain: "📱 Главная", tabAdmin: "🔑 Админка",
+                admMoneyTitle: "💰 Управление деньгами GODNI", admLblTarget: "Выберите получателя:", admLblAmount: "Сумма перевода (в N̶):", admGrantBtn: "Начислить валюту N̶",
+                admRemoveTitle: "❌ Исключение из группы Niqueria", admRemoveBtn: "❌ Удалить участника",
+                admLotTitle: "🎰 Панель запуска розыгрыша", admStartLotBtn: "ЗАПУСТИТЬ ЛОТЕРЕЮ НА САЙТЕ",
+                admAuthTitle: "Введите секретный код Администратора:", admAuthBtn: "Войти в систему"
+            },
+            en: {
+                loginTitle: "Login to Niqueria", loginSub: "Enter your name to register in the group list.", loginBtn: "Enter Portal", bankTitle: "🏦 Central Bank: GODNI", balanceText: "Your balance: ", membersTitle: "👥 Niqueria Group Members List:", lotteryTitle: "🎰 Daily Super-Lottery", lotteryMachine: "Waiting for the Administrator...", funnyFact: "📌 <strong>Note for Uncle Vlad:</strong> <br>We are NOT Nigeria! Our currency from <b>GODNI</b> bank is written as <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Members: 10",
+                monthTitle: "📅 Event of the Month", monthText: "Expect the grand launch of the portal on September 8th!",
+                // Новые переводы для вкладок и админки (EN)
+                tabMain: "📱 Main", tabAdmin: "🔑 Admin",
+                admMoneyTitle: "💰 GODNI Money Management", admLblTarget: "Select recipient:", admLblAmount: "Transfer amount (in N̶):", admGrantBtn: "Grant N̶ Currency",
+                admRemoveTitle: "❌ Exclusion from Niqueria Group", admRemoveBtn: "❌ Remove Member",
+                admLotTitle: "🎰 Lottery Launch Panel", admStartLotBtn: "LAUNCH LOTTERY ON SITE",
+                admAuthTitle: "Enter Secret Administrator Code:", admAuthBtn: "Log In"
+            },
+            es: {
+                loginTitle: "Iniciar sesión en Niqueria", loginSub: "Introduce tu nombre para registrarte.", loginBtn: "Entrar al Portal", bankTitle: "🏦 Banco Central: GODNI", balanceText: "Tu saldo: ", membersTitle: "👥 Lista de Miembros del Grupo Niqueria:", lotteryTitle: "🎰 Súper Lotería Diaria", lotteryMachine: "Esperando al Administrador...", funnyFact: "📌 <strong>Nota para el tío Vlad:</strong> <br>¡NO somos Nigeria! Nuestra moneda de <b>GODNI</b> se escribe <b>N̶</b>. 😎", footerText: "Niqueria © 2026 • Miembros: 10",
+                monthTitle: "📅 Evento del Mes", monthText: "¡Espere el gran lanzamiento del portal el 8 de septiembre!",
+                // Новые переводы для вкладок и админки (ES)
+                tabMain: "📱 Principal", tabAdmin: "🔑 Admin",
+                admMoneyTitle: "💰 Gestión de Dinero GODNI", admLblTarget: "Selecciona el destinatario:", admLblAmount: "Cantidad a transferir (en N̶):", admGrantBtn: "Otorgar Moneda N̶",
+                admRemoveTitle: "❌ Exclusión del Grupo Niqueria", admRemoveBtn: "❌ Eliminar Miembro",
+                admLotTitle: "🎰 Panel de Lanzamiento de Lotería", admStartLotBtn: "LANZAR LOTERÍA EN EL SITIO",
+                admAuthTitle: "Introduce el Código Secreto de Administrador:", admAuthBtn: "Entrar al Sistema"
+            }
         };
 
         function changeSiteLanguage(lang) {
             localStorage.setItem('niqueria_lang', lang);
-            const t = translations[lang]; if (!t) return;
-            document.getElementById('loginTitle').innerText = t.loginTitle;
-            document.getElementById('loginSub').innerText = t.loginSub;
-            document.getElementById('loginBtn').innerText = t.loginBtn;
+            const t = translations[lang];
+            if (!t) return;
+
+            try {
+                if (document.getElementById('loginTitle')) document.getElementById('loginTitle').innerText = t.loginTitle;
+                if (document.getElementById('loginSub')) document.getElementById('loginSub').innerText = t.loginSub;
+                if (document.getElementById('loginBtn')) document.getElementById('loginBtn').innerText = t.loginBtn;
+            } catch (e) { }
+
+            // Перевод вкладок в шапке (работает всегда!)
+            try {
+                document.getElementById('tabMain').innerText = t.tabMain;
+                document.getElementById('tabAdmin').innerText = t.tabAdmin;
+            } catch (e) { }
+
             if (document.getElementById('mainSiteContent').style.display !== 'block') return;
-            document.getElementById('bankTitle').innerText = t.bankTitle;
-            document.getElementById('dailyIncomeDisplay').innerText = `${t.balanceText}${totalIncome} N̶`;
-            document.getElementById('membersTitle').innerText = t.membersTitle;
-            document.getElementById('lotteryTitle').innerText = t.lotteryTitle;
-            if (!isSpinning) document.getElementById('lotteryScreen').innerText = t.lotteryMachine;
-            document.getElementById('funnyFact').innerHTML = t.funnyFact;
-            document.getElementById('footerText').innerText = t.footerText;
+
+            try {
+                document.getElementById('bankTitle').innerText = t.bankTitle;
+                document.getElementById('dailyIncomeDisplay').innerText = `${t.balanceText}${totalIncome} N̶`;
+                document.getElementById('membersTitle').innerText = t.membersTitle;
+                document.getElementById('lotteryTitle').innerText = t.lotteryTitle;
+                if (!isSpinning) document.getElementById('lotteryScreen').innerText = t.lotteryMachine;
+                document.getElementById('funnyFact').innerHTML = t.funnyFact;
+                document.getElementById('footerText').innerText = t.footerText;
+
+                document.getElementById('monthEventTitle').innerText = t.monthTitle;
+                if (!localStorage.getItem('niqueria_month_event')) {
+                    document.getElementById('monthEventBillboard').innerText = t.monthText;
+                }
+            } catch (e) { }
+
+            // ПЕРЕВОД ВСЕХ ПОЛЕЙ АДМИНКИ
+            try {
+                if (document.getElementById('admAuthTitle')) document.getElementById('admAuthTitle').innerText = t.admAuthTitle;
+                if (document.getElementById('admAuthBtn')) document.getElementById('admAuthBtn').innerText = t.admAuthBtn;
+                if (document.getElementById('admMoneyTitle')) document.getElementById('admMoneyTitle').innerText = t.admMoneyTitle;
+                if (document.getElementById('admLblTarget')) document.getElementById('admLblTarget').innerText = t.admLblTarget;
+                if (document.getElementById('admLblAmount')) document.getElementById('admLblAmount').innerText = t.admLblAmount;
+                if (document.getElementById('admGrantBtn')) document.getElementById('admGrantBtn').innerText = t.admGrantBtn;
+                if (document.getElementById('admRemoveTitle')) document.getElementById('admRemoveTitle').innerText = t.admRemoveTitle;
+                if (document.getElementById('admRemoveBtn')) document.getElementById('admRemoveBtn').innerText = t.admRemoveBtn;
+                if (document.getElementById('admLotTitle')) document.getElementById('admLotTitle').innerText = t.admLotTitle;
+                if (document.getElementById('admStartLotBtn')) document.getElementById('admStartLotBtn').innerText = t.admStartLotBtn;
+            } catch (e) { }
         }
+
 
         // Обновляем базу данных под версию из блокнота
         if (localStorage.getItem('niqueria_version') !== 'v10') {
@@ -493,16 +554,35 @@
                 document.getElementById('adminAuthBlock').style.display = 'none';
                 document.getElementById('adminControlsBlock').style.display = 'block';
                 updateAdminDropdowns();
+
+                // Мгновенно переводим админку на выбранный язык
+                changeSiteLanguage(localStorage.getItem('niqueria_lang') || 'ru');
             } else { alert("Неверный код!"); }
         }
 
         function adminGrantMoney() {
+            const target = document.getElementById('moneyTargetSelect').value;
             const amt = parseInt(document.getElementById('moneyAmountInput').value) || 0;
-            if (document.getElementById('moneyTargetSelect').value === 'player') { totalIncome += amt; }
-            localStorage.setItem('niqueria_balance', totalIncome);
-            document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`;
-            alert(`Начислено ${amt} N̶!`);
+
+            if (target === 'nicolas') {
+                alert(`Успешно! Банк GODNI начислил ${amt} N̶ на счёт Nicolás 👑`);
+            } else if (target === 'all') {
+                alert(`Успешно! Все участники группы получили по ${amt} N̶ из кассы GODNI! 👥💰`);
+            }
+
+            // Если ты сам залогинен под именем Nicolás или ребят из списка, 
+            // твой живой баланс на экране тоже обновится!
+            if (currentLoggedInUser === "Nicolás 👑" && target === 'nicolas') {
+                totalIncome += amt;
+                localStorage.setItem('niqueria_balance', totalIncome);
+                document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`;
+            } else if (target === 'all') {
+                totalIncome += amt;
+                localStorage.setItem('niqueria_balance', totalIncome);
+                document.getElementById('dailyIncomeDisplay').innerText = `Твой баланс: ${totalIncome} N̶`;
+            }
         }
+
 
         function adminRemoveMember() {
             const val = document.getElementById('removeMemberSelect').value;
